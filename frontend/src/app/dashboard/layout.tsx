@@ -2,6 +2,7 @@
 import React from 'react';
 import LeftSidebar from '../../../components/LeftSidebar';
 import './dashboard.css';
+import Todo from '../../../components/Todo';
 
 export const metadata = {
   title: 'Dashboard',
@@ -25,12 +26,13 @@ export default async function DashboardLayout({
 }) 
 {
 const sidebarLinks = await getSidebarData();
-  return (
-    <div className="min-h-screen bg-slate-900 text-black flex">
+  return (<> 
+    <div className=" bg-slate-900 text-black flex h-screen overflow-hidden">
       {/* You can add a sidebar or topbar here if needed */}
-      <LeftSidebar sidebar={sidebarLinks} />
-      <div className="flex-1 p-4">
+      
+      <div className="flex-1">
         {children}</div>
     </div>
+  </>
   );
 }

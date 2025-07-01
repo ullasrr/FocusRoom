@@ -89,7 +89,7 @@ export default function PomodoroTimer() {
     setIsRunning(false)
     if (timerRef.current) clearInterval(timerRef.current)
     // Optional: reset cycle count
-    if (session === "focus") setFocusCount(0)
+    // if (session === "focus") setFocusCount(0)
   }
 
   const handleSkip = () => {

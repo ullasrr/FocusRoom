@@ -7,7 +7,7 @@ const mockData = {
   { "icon": "StickyNote", "label": "Notes" },
   { "icon": "Music", "label": "Sounds" },
   { "icon": "Palette", "label": "Themes" },
-  { "icon": "ListChecks", "label": "To do" },
+  { "icon": "ListChecks", "label": "Todo" },
   { "icon": "Users", "label": "Create custom room" },
   { "icon": "Flame", "label": "Streak" },
   { "icon": "Quote", "label": "Enable study quotes" },
