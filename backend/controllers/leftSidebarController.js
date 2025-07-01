@@ -1,5 +1,5 @@
-import mockData from '../models/leftSidebarModel';
+import mockData from '../models/leftSidebarModel.js';
 
-exports.getData = (req, res) => {
+export function getData(req, res) {
   res.status(200).json(mockData);
-};
+}

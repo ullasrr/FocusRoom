@@ -9,7 +9,8 @@ export const metadata = {
 };
 
 async function getSidebarData(){
-  const res= await fetch('http://localhost:3000/', {
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+  const res= await fetch(`${baseUrl}`, {
     cache: 'no-store',
   });
   const data = await res.json();
@@ -25,10 +26,10 @@ export default async function DashboardLayout({
 {
 const sidebarLinks = await getSidebarData();
   return (
-    <div className="min-h-screen bg-gray-100 text-black flex">
+    <div className="min-h-screen bg-slate-900 text-black flex">
       {/* You can add a sidebar or topbar here if needed */}
       <LeftSidebar sidebar={sidebarLinks} />
-      <div className="p-4">
+      <div className="flex-1 p-4">
         {children}</div>
     </div>
   );

@@ -8,7 +8,8 @@ import {
   Users,
   Flame,
   Quote,
-  Sparkles
+  Sparkles,
+  Settings
 } from "lucide-react"
 
 export const iconMap: Record<string, React.ReactNode> = {
@@ -20,5 +21,6 @@ export const iconMap: Record<string, React.ReactNode> = {
   Users: <Users />,
   Flame: <Flame />,
   Quote: <Quote />,
-  Sparkles: <Sparkles />
+  Sparkles: <Sparkles />,
+  Settings: <Settings />
 }

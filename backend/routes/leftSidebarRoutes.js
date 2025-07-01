@@ -1,8 +1,11 @@
-const express = require('express');
-const router = express.Router();
+import express from 'express';
+import { Router } from 'express';
+import { config } from 'dotenv';
+config();
+const router = Router();
 
-import mockData from '../models/leftSidebarModel';
+import { getData } from '../controllers/leftSidebarController.js';
 
-router.get('/',mockData);
+router.get('/',getData);
 
 export default router;

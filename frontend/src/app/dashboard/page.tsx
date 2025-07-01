@@ -1,21 +1,24 @@
 import React from 'react'
-import Timer from '../../../components/Timer'
+// import Timer from '../../../components/Timer'
+import PomodoroTimer from '../../../components/PomodoroTimer'
 import Notes from '../../../components/Notes'
-import LeftSidebar from '../../../components/LeftSidebar'
+// import dotenv from 'dotenv'
+// dotenv.config()
 
 
 const DashboardPage = async () => {
-  const res= await fetch('http://localhost:3000/', {
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+  const res= await fetch(`${baseUrl}`, {
     cache: 'no-store',
     
   });
   const data = await res.json();
   return (
-    <div>
-      <div>this is dashboard</div>
-      <Timer initialTime={data.initialTime} />
-      <Notes initialText={data.notes} />
+    <>
+    <div className="flex justify-center items-center h-full bg-slate-900 text-white">
+      <PomodoroTimer />
     </div>
+    </>
   )
 }
 
