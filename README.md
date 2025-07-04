@@ -3,7 +3,7 @@
 
 dotenv variables frontend
 
-NEXT_PUBLIC_BASE_URL=http://localhost:3001
+backendurl=http://localhost:3001
 
 MONGODB_URI=
 GOOGLE_CLIENT_ID=

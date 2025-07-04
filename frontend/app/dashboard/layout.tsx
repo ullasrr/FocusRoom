@@ -1,8 +1,8 @@
 // app/dashboard/layout.tsx
 import React from 'react';
-import LeftSidebar from '../../../components/LeftSidebar';
+import LeftSidebar from '../../components/LeftSidebar';
 import './dashboard.css';
-import Todo from '../../../components/Todo';
+import Todo from '../../components/Todo';
 
 export const metadata = {
   title: 'Dashboard',
@@ -10,7 +10,7 @@ export const metadata = {
 };
 
 async function getSidebarData(){
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+    const baseUrl = process.env.backendurl;
   const res= await fetch(`${baseUrl}`, {
     cache: 'no-store',
   });
@@ -31,7 +31,11 @@ const sidebarLinks = await getSidebarData();
       {/* You can add a sidebar or topbar here if needed */}
       
       <div className="flex-1">
-        {children}</div>
+     
+        {children}
+    
+
+        </div>
     </div>
   </>
   );

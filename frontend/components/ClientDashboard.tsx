@@ -3,6 +3,9 @@ import React, { useState } from 'react';
 import LeftSidebar from './LeftSidebar';
 import PomodoroTimer from './PomodoroTimer';
 import Todo from './Todo';
+import Notes from './Notes'
+
+
 
 interface Link {
   icon: string;
@@ -24,6 +27,7 @@ const ClientDashboard = ({ sidebarLinks }: Props) => {
   };
 
   return (
+    
     <div className="flex h-screen bg-slate-900 text-white overflow-hidden relative">
       {/* Sidebar */}
       <LeftSidebar sidebar={sidebarLinks} onItemClick={handleSidebarclick} />
@@ -36,7 +40,7 @@ const ClientDashboard = ({ sidebarLinks }: Props) => {
         </div>
 
         {/* Toggle Todo button */}
-      
+        <Notes />
 
         {/* Todo at bottom-left */}
         {showTodo && (

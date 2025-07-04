@@ -11,46 +11,47 @@ export const authOptions: NextAuthOptions = {
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
-    EmailProvider({
-      server: {
-        host: process.env.EMAIL_SERVER_HOST!,
-        port: Number(process.env.EMAIL_SERVER_PORT!),
-        auth: {
-          user: process.env.EMAIL_SERVER_USER!,
-          pass: process.env.EMAIL_SERVER_PASS!,
-        },
-      },
-      from: process.env.EMAIL_FROM!,
-    }),
+    
   ],
   pages: {
     signIn: "/signin",
   },
   callbacks: {
-    async jwt({ token, user, account }) {
-      if (user) token.email = user.email;
+    
+    
+  async jwt({ token, user, account }) {
+    if (user) token.email = user.email;
 
-      const db = (await clientPromise).db();
-      const dbUser = await db.collection("users").findOne({ email: token.email });
+    const db = (await clientPromise).db();
+    const dbUser = await db.collection("users").findOne({ email: token.email });
 
-      token.plan = dbUser?.plan || "free";
-      token.provider = dbUser?.provider || account?.provider || "email";
+    token.plan = dbUser?.plan || "free";
+    token.provider = account?.provider || dbUser?.provider || "google";
 
-      // Store provider if missing
-      if (dbUser && !dbUser.provider) {
-        await db.collection("users").updateOne(
-          { email: token.email },
-          { $set: { provider: token.provider } }
-        );
-      }
+    if (dbUser && !dbUser.provider && token.provider) {
+      await db.collection("users").updateOne(
+        { email: token.email },
+        { $set: { provider: token.provider, plan: token.plan} }
+      );
+    }
 
-      return token;
-    },
-    async session({ session, token }) {
+    // console.log("🔐 JWT CALLBACK", { token }); // 🔍 debug
+
+    return token;
+  },
+
+  async session({ session, token }) {
+    // console.log("🧠 SESSION CALLBACK", { token });
+
+    if (session.user) {
       session.user.plan = token.plan as string;
       session.user.provider = token.provider as string;
-      return session;
-    },
+    }
+
+    // console.log("📦 Final Session", session);
+
+    return session;
+  },
   },
   session: {
     strategy: "jwt",
