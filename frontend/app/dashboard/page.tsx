@@ -7,7 +7,7 @@ import { authOptions } from '../../lib/auth';
 
 
 async function getSidebarData(){
-    const baseUrl = process.env.backendurl;
+    const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
   const res= await fetch(`${baseUrl}`, {
     cache: 'no-store',
   });
@@ -31,6 +31,7 @@ const DashboardPage = async () => {
     <>
     <div className=" ">
       <ClientDashboard sidebarLinks={sidebarLinks} />
+
     </div>
     </>
   )

@@ -41,17 +41,31 @@ export const authOptions: NextAuthOptions = {
   },
 
   async session({ session, token }) {
-    // console.log("🧠 SESSION CALLBACK", { token });
+  if (session.user) {
+    session.user.plan = token.plan as string;
+    session.user.provider = token.provider as string;
 
-    if (session.user) {
-      session.user.plan = token.plan as string;
-      session.user.provider = token.provider as string;
+    // Send session user to Express backend
+    try {
+      await fetch("http://localhost:3001/api/users", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: session.user.email,
+          name: session.user.name,
+          image: session.user.image,
+          provider: session.user.provider,
+          plan: session.user.plan,
+        }),
+      });
+    } catch (error) {
+      console.error("Failed to sync user with Express backend:", error);
     }
+  }
 
-    // console.log("📦 Final Session", session);
+  return session;
+}
 
-    return session;
-  },
   },
   session: {
     strategy: "jwt",

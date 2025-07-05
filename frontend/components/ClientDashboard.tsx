@@ -4,6 +4,7 @@ import LeftSidebar from './LeftSidebar';
 import PomodoroTimer from './PomodoroTimer';
 import Todo from './Todo';
 import Notes from './Notes'
+import { SessionProvider } from 'next-auth/react';
 
 
 
@@ -18,16 +19,21 @@ interface Props {
 
 const ClientDashboard = ({ sidebarLinks }: Props) => {
   const [showTodo, setShowTodo] = useState(false);
+  const [showNotes, setshowNotes] = useState(false)
  
 
   const handleSidebarclick = (label:string) =>{
     if(label === "Todo"){
       setShowTodo(prev=>!prev);
     }
+    if(label=== "Notes"){
+      setshowNotes(prev=> !prev);
+    }
   };
 
   return (
-    
+    <SessionProvider>
+
     <div className="flex h-screen bg-slate-900 text-white overflow-hidden relative">
       {/* Sidebar */}
       <LeftSidebar sidebar={sidebarLinks} onItemClick={handleSidebarclick} />
@@ -40,7 +46,12 @@ const ClientDashboard = ({ sidebarLinks }: Props) => {
         </div>
 
         {/* Toggle Todo button */}
-        <Notes />
+        {showNotes && (
+  <div className="absolute top-4 right-4">
+    <Notes />
+  </div>
+)}
+
 
         {/* Todo at bottom-left */}
         {showTodo && (
@@ -50,6 +61,7 @@ const ClientDashboard = ({ sidebarLinks }: Props) => {
         )}
       </div>
     </div>
+        </SessionProvider>
   );
 };
 
