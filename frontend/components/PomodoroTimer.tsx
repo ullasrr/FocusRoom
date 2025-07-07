@@ -136,7 +136,8 @@ export default function PomodoroTimer() {
 
   const colors = getSessionColors()
 
-  return (<div className="fixed">
+  return (
+  <div className="fixed">
    {/*  <Draggable nodeRef={dragRef} handle=".drag-handle">
       <div ref={dragRef} className="fixed drag-handle cursor-move"> */}
         {/* Animated background blur */}

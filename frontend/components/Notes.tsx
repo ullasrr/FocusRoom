@@ -337,14 +337,14 @@ if (!session || session?.user?.plan!=='pro') {
                                   .filter(Boolean),
                               })
                             }
-                            className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white flex-1 shadow-md hover:shadow-lg transition-all duration-200 rounded-lg"
+                            className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white flex-1 shadow-md hover:shadow-lg transition-all duration-200 rounded-lg cursor-pointer" 
                           >
                             <Save className="w-4 h-4 mr-2" /> Save
                           </Button>
                           <Button
                             onClick={() => setEditingId(null)}
                             variant="outline"
-                            className="flex-1 border-gray-600 hover:bg-gray-700 text-gray-300 rounded-lg transition-colors"
+                            className="flex-1 border-gray-600 hover:bg-gray-700 text-gray-300 rounded-lg transition-colors cursor-pointer"
                           >
                             Cancel
                           </Button>
@@ -380,9 +380,9 @@ if (!session || session?.user?.plan!=='pro') {
                             </Button>
                           </div>
                         </div>
-                        <p className="text-gray-200 leading-relaxed text-sm bg-gray-700/50 p-3 rounded-lg border border-gray-600/50">
+                        <div className="text-gray-200 leading-relaxed text-sm bg-gray-700/50 p-3 rounded-lg border border-gray-600/50 whitespace-pre-wrap">
                           {note.content}
-                        </p>
+                        </div>
                         {note.tags.length > 0 && (
                           <div className="flex flex-wrap gap-2">
                             {note.tags.map((tag, idx) => (

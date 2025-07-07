@@ -1,10 +1,19 @@
-import dataRoutes from './routes/leftSidebarRoutes.js';
-import notesRoutes from './routes/notesRoutes.js'
+import { config } from 'dotenv';
+config();
+
+
+import { fileURLToPath } from 'url';
+import path from 'path';
 import mongoose from 'mongoose';
 import cors from 'cors'
 import express,{json} from 'express';;
-import { config } from 'dotenv';
-config();
+
+import dataRoutes from './routes/leftSidebarRoutes.js';
+import calendarRoutes from './routes/CalendarRoutes.js'
+import notesRoutes from './routes/notesRoutes.js'
+import themesRoutes from './routes/themesRoutes.js'
+import studygptRoutes from './routes/StudyGPTRoutes.js';
+
 const app = express();
 const PORT = process.env.PORT;
 app.use(
@@ -14,15 +23,36 @@ app.use(
   })
 );
 
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+
 app.use(express.json());
+
+//Routes
+
 app.use('/',dataRoutes);
+app.use('/api/notes',notesRoutes);
+app.use('/themes', express.static(path.join(__dirname, 'public/themes')));
+app.use('/api/themes',themesRoutes);
+app.use('/api', calendarRoutes); 
+app.use('/api',studygptRoutes)
+
+
+
+
+
+
+
+//MongoDB connection
 
 mongoose.connect(process.env.MONGODB_URI, {
 })
 .then(() => console.log("✅ Connected to MongoDB from backend"))
 .catch((err) => console.error("❌ MongoDB connection error:", err));
 
-app.use('/api/notes',notesRoutes);
+//start server
 
 app.listen(PORT, () => {
     try {

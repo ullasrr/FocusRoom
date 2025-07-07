@@ -19,9 +19,9 @@ const LeftSidebar = ({ sidebar =[],onItemClick }: Props) => {
   return (
     
     <TooltipProvider delayDuration={300}>
-      <div className="h-screen bg-slate-900 text-white w-16 border-r border-slate-700 shadow-xl">
+      <div className="h-screen text-white w-16 border-r border-slate-700 shadow-xl">
         <div className="flex flex-col space-y-2 p-2">
-          {sidebar.map((item, index) => (
+          {sidebar.filter((item) => iconMap[item.icon]).map((item, index) => (
             <SidebarItem
               key={index}
               icon={iconMap[item.icon] ?? iconMap["Clock"]}

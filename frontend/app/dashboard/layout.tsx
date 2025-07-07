@@ -7,14 +7,7 @@ export const metadata = {
   description: 'User dashboard section',
 };
 
-async function getSidebarData(){
-    const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-  const res= await fetch(`${baseUrl}`, {
-    cache: 'no-store',
-  });
-  const data = await res.json();
-  return data.sidebar?.links || [];
-}
+
 
 export default async function DashboardLayout({
 
@@ -23,18 +16,21 @@ export default async function DashboardLayout({
   children: React.ReactNode;
 }) 
 {
-const sidebarLinks = await getSidebarData();
-  return (<> 
-    <div className=" bg-slate-900 text-black flex h-screen overflow-hidden">
+  return (        
+  
+
+  <> 
+
       {/* You can add a sidebar or topbar here if needed */}
+    <div className=" text-black bg-slate-900 flex h-screen overflow-hidden dashboard-container">
       
-      <div className="flex-1">
+      <div className="flex-1 bg-transparent">
         {children}
 
-    
 
         </div>
     </div>
   </>
+
   );
 }

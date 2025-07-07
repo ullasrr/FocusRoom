@@ -1,3 +1,4 @@
+
 import React from 'react'
 import ClientDashboard from '../../components/ClientDashboard'
 import {getServerSession} from 'next-auth/next';
@@ -29,7 +30,8 @@ const DashboardPage = async () => {
 
   return (
     <>
-    <div className=" ">
+    <div >
+     
       <ClientDashboard sidebarLinks={sidebarLinks} />
 
     </div>

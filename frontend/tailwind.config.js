@@ -1,5 +1,7 @@
 // tailwind.config.js (ESM)
 import scrollbar from 'tailwind-scrollbar';
+import typography from '@tailwindcss/typography';
+
 
 /** @type {import('tailwindcss').Config} */
 const config = {
@@ -7,7 +9,7 @@ const config = {
   theme: {
     extend: {},
   },
-  plugins: [scrollbar],
+  plugins: [scrollbar,typography],
 };
 
 export default config;

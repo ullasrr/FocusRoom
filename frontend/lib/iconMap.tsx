@@ -6,8 +6,6 @@ import {
   Palette,
   ListChecks,
   Users,
-  Flame,
-  Quote,
   Sparkles,
   Settings
 } from "lucide-react"
@@ -19,8 +17,6 @@ export const iconMap: Record<string, React.ReactNode> = {
   Palette: <Palette />,
   ListChecks: <ListChecks />,
   Users: <Users />,
-  Flame: <Flame />,
-  Quote: <Quote />,
   Sparkles: <Sparkles />,
   Settings: <Settings />
 }

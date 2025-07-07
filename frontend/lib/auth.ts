@@ -1,8 +1,34 @@
+// auth.ts
 import { MongoDBAdapter } from "@next-auth/mongodb-adapter";
 import clientPromise from "./mongodb";
 import GoogleProvider from "next-auth/providers/google";
-import EmailProvider from "next-auth/providers/email";
 import type { NextAuthOptions } from "next-auth";
+import { google } from "googleapis";
+
+async function refreshAccessToken(token: any) {
+  try {
+    const client = new google.auth.OAuth2(
+      process.env.GOOGLE_CLIENT_ID,
+      process.env.GOOGLE_CLIENT_SECRET
+    );
+
+    client.setCredentials({
+      refresh_token: token.refreshToken,
+    });
+
+    const { credentials } = await client.refreshAccessToken();
+
+    return {
+      ...token,
+      accessToken: credentials.access_token,
+      accessTokenExpires: Date.now() + (credentials.expiry_date ?? 3600 * 1000),
+      refreshToken: credentials.refresh_token ?? token.refreshToken,
+    };
+  } catch (error) {
+    console.error("🔁 Error refreshing access token:", error);
+    return { ...token, error: "RefreshAccessTokenError" };
+  }
+}
 
 export const authOptions: NextAuthOptions = {
   adapter: MongoDBAdapter(clientPromise),
@@ -10,65 +36,62 @@ export const authOptions: NextAuthOptions = {
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      authorization: {
+        params: {
+          scope: "openid email profile https://www.googleapis.com/auth/calendar.events",
+          access_type: "offline",
+          prompt: "consent",
+        },
+      },
     }),
-    
   ],
   pages: {
     signIn: "/signin",
   },
-  callbacks: {
-    
-    
-  async jwt({ token, user, account }) {
-    if (user) token.email = user.email;
-
-    const db = (await clientPromise).db();
-    const dbUser = await db.collection("users").findOne({ email: token.email });
-
-    token.plan = dbUser?.plan || "free";
-    token.provider = account?.provider || dbUser?.provider || "google";
-
-    if (dbUser && !dbUser.provider && token.provider) {
-      await db.collection("users").updateOne(
-        { email: token.email },
-        { $set: { provider: token.provider, plan: token.plan} }
-      );
-    }
-
-    // console.log("🔐 JWT CALLBACK", { token }); // 🔍 debug
-
-    return token;
-  },
-
-  async session({ session, token }) {
-  if (session.user) {
-    session.user.plan = token.plan as string;
-    session.user.provider = token.provider as string;
-
-    // Send session user to Express backend
-    try {
-      await fetch("http://localhost:3001/api/users", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: session.user.email,
-          name: session.user.name,
-          image: session.user.image,
-          provider: session.user.provider,
-          plan: session.user.plan,
-        }),
-      });
-    } catch (error) {
-      console.error("Failed to sync user with Express backend:", error);
-    }
-  }
-
-  return session;
-}
-
-  },
   session: {
     strategy: "jwt",
+  },
+  callbacks: {
+    async jwt({ token, account, user }) {
+      if (account) {
+        token.accessToken = account.access_token;
+        token.refreshToken = account.refresh_token;
+        token.accessTokenExpires = account.expires_at
+          ? account.expires_at * 1000
+          : Date.now() + 3600 * 1000; // fallback: 1 hour
+      }
+
+      const db = (await clientPromise).db();
+      const dbUser = await db.collection("users").findOne({ email: token.email });
+
+      token.plan = dbUser?.plan || "free";
+      token.provider = account?.provider || dbUser?.provider || "google";
+
+      if (dbUser && !dbUser.provider && token.provider) {
+        await db.collection("users").updateOne(
+          { email: token.email },
+          { $set: { provider: token.provider, plan: token.plan } }
+        );
+      }
+
+      // If access token is still valid, return it
+      if (Date.now() < ((token as any).accessTokenExpires ?? 0)) return token;
+
+
+      // Otherwise, refresh it
+      return await refreshAccessToken(token);
+    },
+
+    async session({ session, token }) {
+      if (session.user) {
+        session.user.plan = token.plan as string;
+        session.user.provider = token.provider as string;
+        session.accessToken = token.accessToken as string;
+        session.error = token.error as string;
+      }
+
+      return session;
+    },
   },
   secret: process.env.NEXTAUTH_SECRET,
 };
