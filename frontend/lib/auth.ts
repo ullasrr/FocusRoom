@@ -56,9 +56,12 @@ export const authOptions: NextAuthOptions = {
       if (account) {
         token.accessToken = account.access_token;
         token.refreshToken = account.refresh_token;
-        token.accessTokenExpires = account.expires_at
-          ? account.expires_at * 1000
-          : Date.now() + 3600 * 1000; // fallback: 1 hour
+
+        // 🛠 Fix: detect if expires_at is in seconds or ms
+        const expiresAt = account.expires_at ?? Math.floor(Date.now() / 1000);
+        token.accessTokenExpires = expiresAt < 10 ** 12
+          ? expiresAt * 1000
+          : expiresAt;
       }
 
       const db = (await clientPromise).db();
@@ -75,7 +78,13 @@ export const authOptions: NextAuthOptions = {
       }
 
       // If access token is still valid, return it
-      if (Date.now() < ((token as any).accessTokenExpires ?? 0)) return token;
+      console.log('today date',Date.now())
+      console.log('access token expires',((token as any).accessTokenExpires ?? 0))
+      // if (Date.now() < ((token as any).accessTokenExpires ?? 0)) return token;
+
+            if (Date.now() < ((token as any).accessTokenExpires ?? 0)) {
+        return token;
+      }
 
 
       // Otherwise, refresh it

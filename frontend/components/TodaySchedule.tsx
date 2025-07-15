@@ -21,27 +21,32 @@ const TodaySchedule = () => {
 
   console.log("this is events", events)
 
-  useEffect(() => {
-    const fetchEvents = async () => {
-      if (!session?.accessToken) return
+useEffect(() => {
+  if (!session?.accessToken) return;
 
-      setIsLoading(true)
-      try {
-        const res = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/calendar/today`, {
-          accessToken: session.accessToken,
-        })
-        setEvents(res.data.items || [])
-      } catch (error) {
-        console.error("Error fetching events:", error)
-      } finally {
-        setIsLoading(false)
-      }
+  const fetchEvents = async () => {
+    setIsLoading(true);
+    try {
+      const res = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/calendar/today`, {
+        accessToken: session.accessToken,
+      });
+      setEvents(res.data.items || []);
+    } catch (error) {
+  console.error("Error fetching events:", error);
+  if (axios.isAxiosError(error) && error.response?.status === 401) {
+    console.warn("🔐 Access token might have expired. Try re-authenticating.");
+  }
+}
+ finally {
+      setIsLoading(false);
     }
+  };
 
-    fetchEvents()
-  }, [session])
+  fetchEvents();
+}, [session?.accessToken]);
 
-  console.log("this is accesstoken", session?.accessToken) // ✅ usable in API calls
+
+  console.log("this is accesstoken", sessionResult?.data) // ✅ usable in API calls
 
   // Show loading state while session is being determined
   if (status === "loading") {

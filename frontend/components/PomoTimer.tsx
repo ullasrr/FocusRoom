@@ -184,7 +184,7 @@ export default function PomoTimer() {
           <div
             className={`text-9xl md:text-[10rem] lg:text-[10rem] font-black text-white font-mono tracking-wider ${quantico.className} select-none`}
             style={{
-              WebkitTextStroke: "2px rgba(255,255,255,0.)",
+              WebkitTextStroke: "2px rgba(255,255,255,0.8)",
               textShadow: "0 0 20px rgba(0, 0, 0, 1)",
             }}
           >

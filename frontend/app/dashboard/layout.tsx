@@ -26,7 +26,7 @@ export default async function DashboardLayout({
       
       <div className="flex-1 bg-transparent">
         {children}
-
+          
 
         </div>
     </div>

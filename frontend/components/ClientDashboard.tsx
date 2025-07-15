@@ -9,6 +9,9 @@ import { SessionProvider } from 'next-auth/react';
 import PomoTimer from './PomoTimer';
 import TodaySchedule from './TodaySchedule';
 import StudyGPT from './StudyGPT';
+import SpotifyWrapper from './SpotifyWrapper';
+// import SpotifyWithSession from './SpotifyWrapper' 
+
 
 // Define Theme interface
 interface Theme {
@@ -34,6 +37,7 @@ const ClientDashboard = ({ sidebarLinks }: Props) => {
   const [showCal, SetshowCal] = useState(false)
   const [showTheme, setshowTheme] = useState(false)
   const [showgpt, setshowgpt] = useState(false)
+  const [showspotify, setshowspotify] = useState(false)
 
   // Fetch themes from backend
   useEffect(() => {
@@ -81,6 +85,7 @@ const ClientDashboard = ({ sidebarLinks }: Props) => {
     if (label === 'Notes') setShowNotes((prev) => !prev);
     if(label==='Timer') SetshowCal((prev)=>!prev)
     if(label==='Study GPT') setshowgpt((prev)=>!prev)
+    if(label==='Music') setshowspotify((prev)=>!prev)
     if (label === 'Themes') {
       setshowTheme((prev)=>!prev);
     }
@@ -156,6 +161,12 @@ const ClientDashboard = ({ sidebarLinks }: Props) => {
               <StudyGPT />
             </div>
           )}
+          
+                {showspotify && (
+        <div className='absolute right-0 top-10'>
+          <SpotifyWrapper />
+        </div>
+      )}
 
 
 
@@ -169,7 +180,7 @@ const ClientDashboard = ({ sidebarLinks }: Props) => {
           )}
         </div>
       </div>
-    </SessionProvider>
+      </SessionProvider>
   );
 };
 

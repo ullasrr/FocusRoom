@@ -5,7 +5,7 @@ const mockData = {
         "links": [
   { "icon": "Clock", "label": "Timer" },
   { "icon": "StickyNote", "label": "Notes" },
-  { "icon": "Music", "label": "Sounds" },
+  { "icon": "Music", "label": "Music" },
   { "icon": "Palette", "label": "Themes" },
   { "icon": "ListChecks", "label": "Todo" },
   { "icon": "Users", "label": "Create custom room" },

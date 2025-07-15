@@ -6,15 +6,23 @@ import { fileURLToPath } from 'url';
 import path from 'path';
 import mongoose from 'mongoose';
 import cors from 'cors'
-import express,{json} from 'express';;
+import express,{json} from 'express';
+import http from 'http';
+import { Server } from 'socket.io';
+import setupSocket from './socket/index.js';
 
 import dataRoutes from './routes/leftSidebarRoutes.js';
 import calendarRoutes from './routes/CalendarRoutes.js'
 import notesRoutes from './routes/notesRoutes.js'
 import themesRoutes from './routes/themesRoutes.js'
 import studygptRoutes from './routes/StudyGPTRoutes.js';
+import roomRoutes from './models/RoomModel.js';
+
 
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server,{cors:{origin:'*'}});
+setupSocket(io);
 const PORT = process.env.PORT;
 app.use(
   cors({
@@ -38,6 +46,8 @@ app.use('/themes', express.static(path.join(__dirname, 'public/themes')));
 app.use('/api/themes',themesRoutes);
 app.use('/api', calendarRoutes); 
 app.use('/api',studygptRoutes)
+app.use('/api/room', roomRoutes);
+
 
 
 
