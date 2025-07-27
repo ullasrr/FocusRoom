@@ -4,12 +4,12 @@ config();
 
 import { fileURLToPath } from 'url';
 import path from 'path';
-import mongoose from 'mongoose';
 import cors from 'cors'
-import express,{json} from 'express';
+import express from 'express';
 import http from 'http';
 import { Server } from 'socket.io';
 import setupSocket from './socket/index.js';
+import connectToDB from './config/db.js';
 
 import dataRoutes from './routes/leftSidebarRoutes.js';
 import calendarRoutes from './routes/CalendarRoutes.js'
@@ -51,23 +51,15 @@ app.use('/api/room', roomRoutes);
 
 
 
+connectToDB()
+  .then(()=>{
+    console.log("connected to db from backend");
 
 
-
-
-//MongoDB connection
-
-mongoose.connect(process.env.MONGODB_URI, {
+    server.listen(PORT,()=>{
+      console.log(`🚀 Server is running on port ${PORT}`);
+    });
+  })
+.catch((err)=>{
+  console.error('❌ Failed to connect to MongoDB:', err);
 })
-.then(() => console.log("✅ Connected to MongoDB from backend"))
-.catch((err) => console.error("❌ MongoDB connection error:", err));
-
-//start server
-
-app.listen(PORT, () => {
-    try {
-        console.log(`Server is running on port ${PORT}`);
-    } catch (error) {
-        console.error('Error starting the server:', error);
-    }
-});

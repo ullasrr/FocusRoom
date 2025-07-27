@@ -16,13 +16,14 @@ async function refreshAccessToken(token: any) {
       refresh_token: token.refreshToken,
     });
 
-    const { credentials } = await client.refreshAccessToken();
+    const { credentials } = await client?.refreshAccessToken();
 
     return {
       ...token,
       accessToken: credentials.access_token,
-      accessTokenExpires: Date.now() + (credentials.expiry_date ?? 3600 * 1000),
+      accessTokenExpires: credentials.expiry_date ?? (Date.now() + 3600 * 1000),
       refreshToken: credentials.refresh_token ?? token.refreshToken,
+      error: undefined, // Clear any previous errors
     };
   } catch (error) {
     console.error("🔁 Error refreshing access token:", error);
@@ -82,7 +83,8 @@ export const authOptions: NextAuthOptions = {
       console.log('access token expires',((token as any).accessTokenExpires ?? 0))
       // if (Date.now() < ((token as any).accessTokenExpires ?? 0)) return token;
 
-            if (Date.now() < ((token as any).accessTokenExpires ?? 0)) {
+      if (Date.now() < ((token as any).accessTokenExpires ?? 0)) {
+        console.log('skipping refresh');
         return token;
       }
 

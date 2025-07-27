@@ -1,6 +1,15 @@
-// ✅ server component
+// app/room/[roomId]/page.tsx
+
+export const dynamic = 'force-dynamic'; // ✅ Required to safely access params in SSR
+
+import { getServerSession } from 'next-auth';
 import ClientOnlyRoomWrapper from './ClientOnlyRoomWrapper';
 
-export default function RoomPage({ params }: { params: { roomId: string } }) {
-  return <ClientOnlyRoomWrapper roomId={params.roomId} />;
+export default async function RoomPage({
+  params,
+}: {
+  params: Promise<{ roomId: string }>;
+}) {
+  const roomId = (await params).roomId;
+  return <ClientOnlyRoomWrapper roomId={roomId} />;
 }

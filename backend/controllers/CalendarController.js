@@ -3,6 +3,8 @@ import { google } from 'googleapis';
 export const getTodayEvents = async (req, res) => {
   const { accessToken } = req.body;
 
+  console.log("Access Token for calender:", accessToken);
+
   if (!accessToken) return res.status(400).json({ error: 'Missing access token' });
 
   const auth = new google.auth.OAuth2();
