@@ -11,5 +11,15 @@ const config = {
   },
   plugins: [scrollbar,typography],
 };
+module.exports = {
+  theme: {
+    extend: {
+      colors: {
+        primary: '#6366f1',  // Indigo-500 as default
+      },
+    },
+  },
+}
+
 
 export default config;

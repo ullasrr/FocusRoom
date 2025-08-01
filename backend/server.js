@@ -1,7 +1,5 @@
 import { config } from 'dotenv';
 config();
-
-
 import { fileURLToPath } from 'url';
 import path from 'path';
 import cors from 'cors'
@@ -16,7 +14,7 @@ import calendarRoutes from './routes/CalendarRoutes.js'
 import notesRoutes from './routes/notesRoutes.js'
 import themesRoutes from './routes/themesRoutes.js'
 import studygptRoutes from './routes/StudyGPTRoutes.js';
-import roomRoutes from './models/RoomModel.js';
+import roomRoutes from './routes/RoomRoutes.js';
 
 
 const app = express();
@@ -38,8 +36,8 @@ const __dirname = path.dirname(__filename);
 
 app.use(express.json());
 
-//Routes
 
+//Routes
 app.use('/',dataRoutes);
 app.use('/api/notes',notesRoutes);
 app.use('/themes', express.static(path.join(__dirname, 'public/themes')));
