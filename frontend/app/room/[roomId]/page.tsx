@@ -1,6 +1,5 @@
-'use client'
-import React from 'react'
-import { useEffect, useState } from 'react';
+'use client';
+import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import VideoCall from './VideoCall';
 
@@ -8,48 +7,64 @@ const RoomPage = () => {
   const params = useParams();
   const router = useRouter();
   const roomId = params.roomId as string;
-  const [userId, setUserId] = useState('');
+  const [userId, setUserId] = useState<string>('');
   const [roomExists, setRoomExists] = useState<boolean | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-
-// One-time userId setup (runs once)
-useEffect(() => {
-  let storedUserId = localStorage.getItem('userId');
-  if (!storedUserId) {
-    storedUserId = `user_${Math.random().toString(36).substr(2, 9)}`;
-    localStorage.setItem('userId', storedUserId);
-  }
-  setUserId(storedUserId);
-}, []); // ✅ only run on mount
-
-// Room validation based on roomId
-useEffect(() => {
-  const validateRoom = async () => {
-    try {
-      const response = await fetch(`http://localhost:3001/api/room/${roomId}`);
-      if (response.ok) {
-        setRoomExists(true);
-      } else if (response.status === 404) {
-        setRoomExists(false);
-        setError('Room not found');
-      } else {
-        setError('Failed to validate room');
-      }
-    } catch (error) {
-      console.error('Error validating room:', error);
-      setError('Network error occurred');
-    } finally {
-      setLoading(false);
+  // One-time userId setup
+  useEffect(() => {
+    let storedUserId = localStorage.getItem('userId');
+    if (!storedUserId) {
+      storedUserId = `user_${Math.random().toString(36).substr(2, 9)}`;
+      localStorage.setItem('userId', storedUserId);
     }
-  };
+    setUserId(storedUserId);
+  }, []);
 
-  if (roomId) {
+  // Room validation
+  useEffect(() => {
+    const validateRoom = async () => {
+      if (!roomId) {
+        setError('Invalid room ID');
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const response = await fetch(`/api/room/${roomId}`, {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+        });
+        if (response.ok) {
+          setRoomExists(true);
+        } else if (response.status === 404) {
+          setRoomExists(false);
+          setError('Room not found');
+        } else {
+          setError('Failed to validate room');
+        }
+      } catch (error) {
+        console.error('Error validating room:', error);
+        setError('Network error occurred. Please try again.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
     validateRoom();
-  }
-}, [roomId]); // ✅ depends only on roomId
+  }, [roomId]);
 
+  // Timeout for loading
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (loading) {
+        setLoading(false);
+        setError('Request timed out. Please try again.');
+      }
+    }, 10000); // 10 seconds timeout
+    return () => clearTimeout(timeout);
+  }, [loading]);
 
   if (loading) {
     return (
@@ -62,7 +77,7 @@ useEffect(() => {
     );
   }
 
-  if (!roomExists) {
+  if (!roomExists || error) {
     return (
       <div className="flex items-center justify-center h-screen bg-gray-900 text-white">
         <div className="text-center">
@@ -79,13 +94,11 @@ useEffect(() => {
     );
   }
 
-
-
   return (
     <div>
       <VideoCall roomId={roomId} userId={userId} />
     </div>
   );
-}
+};
 
 export default RoomPage;
